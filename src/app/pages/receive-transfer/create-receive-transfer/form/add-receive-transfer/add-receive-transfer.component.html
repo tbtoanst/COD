@@ -1,0 +1,209 @@
+<h4 class="title-size" mat-dialog-title>Danh sách TKTK/CCTG KH chọn nhận chuyển nhượng
+    <button type="button" mat-button class="float-end" data-dismiss="modal" (click)="closeFormDialog('close')"
+        aria-hidden="true">×</button>
+</h4>
+
+<div mat-dialog-content>
+    <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+        <p>Đang tải dữ liệu</p>
+    </ngx-spinner>
+
+    <div class="table-responsive" style="position: relative;">
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th> STT </th>
+                    <th> Số TKTK/CCTG </th>
+                    <th> Số dư TKTK/GTCG </th>
+                    <th> Ngày mở (dd/mm/yyyy) </th>
+                    <th> Ngày đến hạn (dd/mm/yyyy) </th>
+                    <th> Thời gian còn lại (ngày) </th>
+                    <th> Lãi suất của TKTK/CCTG (%/năm) </th>
+                    <th> Giá trị giao dịch </th>
+                    <th> Phí nhận chuyển nhượng </th>
+                    <th> Tổng số tiền người nhận chuyển nhượng thanh toán (VND) </th>
+                    <th> Tổng số tiền người nhận chuyển nhượng sẽ nhận vào ngày đến hạn (VND) </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr *ngFor="let item of dataList, index as i">
+                    <td class="text-center"> {{i + 1}} </td>
+                    <td class="text-center"> {{item.data.stk}} </td>
+                    <td class="text-center"> {{formatVND(item.data.so_du)}} </td>
+                    <td class="text-center"> {{item.data.ngay_mo | date: 'dd/MM/yyyy'}} </td>
+                    <td class="text-center"> {{item.data.ngay_tai_ky | date: 'dd/MM/yyyy'}} </td>
+                    <td class="text-center"> {{item.data.so_ngay_con_lai}} </td>
+                    <td class="text-center"> {{item.data.lai_suat}} </td>
+                    <td class="text-center"> {{formatVND(item.data.giatri_giao_dich)}} </td>
+                    <td class="text-center"> {{formatVND(item.data.phi_chuyen_nhuong)}} </td>
+                    <td class="text-center"> {{formatVND(item.data.so_tien_kh_tt_nhan_cn)}} </td>
+                    <td class="text-center"> {{formatVND(item.data.so_tien_kh_nhan_cn)}} </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card my-3 border-0">
+        <div class="card-body p-0">
+            <h4 class="card-title text-uppercase">THÔNG TIN KHÁCH HÀNG NHẬN CHUYỂN NHƯỢNG</h4>
+
+            <form class="" [formGroup]="form">
+                <div class="row g-3 mb-3 px-5">
+                    <div class="col-4">
+                        <span>Tổng giá trị giao dịch: </span>
+                        <span class="fw-bold text-danger">{{formatVND(totalTransAmount)}}</span>
+                    </div>
+                    <div class="col-4">
+                        <span>Tổng số tiền phí nhận chuyển nhượng: </span>
+                        <span class="fw-bold text-danger">{{formatVND(totalFee)}}</span>
+                    </div>
+                    <div class="col-4">
+                        <span>Tổng số tiền KH phải thanh toán: </span>
+                        <span class="fw-bold text-danger">{{formatVND(totalPayment)}}</span>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3 row g-3">
+                    <div class="col-3">
+                        <label>Số CIF/CMND/CCCD/HC</label>
+                        <input formControlName="cif_search" type="text" class="form-control form-control-sm" />
+                    </div>
+
+                    <div class="col-2 d-flex flex-row align-items-end">
+                        <label></label>
+                        <button type="button" (click)="onSearchCIF()" class="btn btn-primary" [disabled]="isLoadingCIF">
+                            <i class="fs-12-px fa"
+                                [ngClass]="{'fa-spin fa-spinner me-1': isLoadingCIF, '': !isLoadingCIF}"></i>
+                            Kiểm tra
+                        </button>
+                    </div>
+
+                    <!-- <div class="col-4">
+                        <label>Họ và tên</label>
+                        <input formControlName="full_name" type="text" class="form-control form-control-sm" />
+                    </div>
+
+                    <div class="col-3">
+                        <label>Số CIF</label>
+                        <input formControlName="cif" type="text" class="form-control form-control-sm" />
+                    </div> -->
+                </div>
+
+                <ng-container *ngIf="isShowPaymentInfo">
+                    <h4 class="card-title text-uppercase">THÔNG TIN THANH TOÁN</h4>
+                    <div class="form-group row g-3">
+                        <div class="col-4">
+                            <label>Hình thức thanh toán</label>
+                            <ng-select [items]="paymentMethodList" bindLabel="name" bindValue="code"
+                                formControlName="buy_payment_method" [clearable]=false [selectOnTab]="true"
+                                placeholder="--- Chọn hình thức thanh toán ---" class="form-control">
+                            </ng-select>
+                        </div>
+
+                        <div class="col-4">
+                            <label>Số tài khoản thanh toán</label>
+                            <ng-select [items]="accountNumList" bindLabel="accountNum" bindValue="accountNum"
+                                [ngClass]="{ 'is-invalid': submitted && f.buy_payment_account_no.errors }"
+                                formControlName="buy_payment_account_no" [clearable]=false [selectOnTab]="true"
+                                placeholder="--- Chọn số tài khoản thanh toán ---" class="form-control">
+                            </ng-select>
+                            <div *ngIf="submitted && f.buy_payment_account_no.errors" class="invalid-feedback">
+                                <small *ngIf="f.buy_payment_account_no.errors?.required">Vui lòng chọn số tài khoản
+                                    thanh toán</small>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <label>Số dư khả dụng</label>
+                            <input formControlName="buy_account_balance"
+                                [ngClass]="{ 'is-invalid': submitted && f.buy_account_balance.errors }"
+                                mask="separator.2" thousandSeparator="." type="text" class="form-control form-control-sm" />
+                            <div *ngIf="submitted && f.buy_account_balance.errors" class="invalid-feedback">
+                                <small *ngIf="f.buy_account_balance.errors?.required">Vui lòng số dư khả dụng</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row g-3">
+                        <div class="col-4">
+                            <label>Chủ tài khoản</label>
+                            <input formControlName="buy_fullname"
+                                [ngClass]="{ 'is-invalid': submitted && f.buy_fullname.errors }" type="text"
+                                class="form-control form-control-sm" />
+                            <div *ngIf="submitted && f.buy_fullname.errors" class="invalid-feedback">
+                                <small *ngIf="f.buy_fullname.errors?.required">Vui lòng chọn loại hóa đơn</small>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <label>Loại tiền</label>
+                            <ng-select bindLabel="name" bindValue="name" [items]="[{'id':1, 'name':'VND'}]"
+                                [searchable]="false" formControlName="buy_payment_ccy" class="form-control" [clearable]="false"
+                                class="form-control">
+                            </ng-select>
+                            <div *ngIf="submitted && f.buy_payment_ccy.errors" class="invalid-feedback">
+                                <small *ngIf="f.buy_payment_ccy.errors?.required">Vui lòng nhập loại tiền</small>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <label>Mã khách hàng</label>
+                            <input formControlName="buy_cif" [ngClass]="{ 'is-invalid': submitted && f.buy_cif.errors }"
+                                type="text" class="form-control form-control-sm" />
+                            <div *ngIf="submitted && f.buy_cif.errors" class="invalid-feedback">
+                                <small *ngIf="f.buy_cif.errors?.required">Vui lòng nhập mã khách hàng</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row g-3">
+                        <div class="col-4">
+                            <label>CMND/CCCD/HC</label>
+                            <input formControlName="buy_id_num"
+                                [ngClass]="{ 'is-invalid': submitted && f.buy_id_num.errors }" type="text"
+                                class="form-control form-control-sm" />
+                            <div *ngIf="submitted && f.buy_id_num.errors" class="invalid-feedback">
+                                <small *ngIf="f.buy_id_num.errors?.required">Vui lòng nhập CMND/CCCD/HC</small>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <label>Mã nhân viên kinh doanh</label>
+                            <ng-select [items]="directEmpList" bindLabel="hrDisplayHoTen" bindValue="hrMSNV"
+                                [ngClass]="{ 'is-invalid': submitted && f.kpi_direct.errors }"
+                                formControlName="kpi_direct" [clearable]=false [selectOnTab]="true"
+                                dropdownPosition="top" placeholder="--- Chọn nhân viên kinh doanh ---"
+                                class="form-control">
+                            </ng-select>
+                            <div *ngIf="submitted && f.kpi_direct.errors" class="invalid-feedback">
+                                <small *ngIf="f.kpi_direct.errors?.required">Vui lòng chọn nhân viên kinh doanh</small>
+                            </div>
+                        </div>
+
+                        <div class="col-4">
+                            <label>Mã KPI gián tiếp</label>
+                            <ng-select [items]="inDirectEmpList" bindLabel="hrDisplayHoTen" bindValue="hrMSNV"
+                                [ngClass]="{ 'is-invalid': submitted && f.kpi_indirect.errors }"
+                                formControlName="kpi_indirect" [clearable]=false [selectOnTab]="true"
+                                dropdownPosition="top" placeholder="--- Chọn nhân viên gián tiếp ---"
+                                class="form-control">
+                            </ng-select>
+                            <div *ngIf="submitted && f.kpi_indirect.errors" class="invalid-feedback">
+                                <small *ngIf="f.kpi_indirect.errors?.required">Vui lòng chọn nhân viên gián tiếp</small>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div mat-dialog-actions class="pull-right">
+    <button (click)="onSubmit()" type="button" class="btn btn-info me-2" [disabled]="isLoading">
+        <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i>
+        Ghi nhận mua
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="closeFormDialog('close')" data-dismiss="modal">Hủy</button>
+</div>

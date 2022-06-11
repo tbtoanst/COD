@@ -1,0 +1,56 @@
+<div class="card mt-2">
+    <div class="card-body min-height-500">
+        <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+            <p>Đang tải dữ liệu</p>
+        </ngx-spinner>
+
+        <div class="table-responsive" style="position: relative;">
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th> STT </th>
+                        <th> Số TKTK/CCTG </th>
+                        <th> Số dư </th>
+                        <th> Ngày mở </th>
+                        <th> Ngày đến hạn </th>
+                        <th> Thời gian còn lại (ngày) </th>
+                        <th> Giá trị giao dịch </th>
+                        <th> Phí </th>
+                        <th> Trạng thái </th>
+                        <th> Đơn vị </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let tran of transferListBuy, index as i">
+                        <td class="text-center"> {{i + 1}} </td> 
+                        <td class="text-center">{{tran.data.stk}}</td>
+                        <td class="text-center">{{formatVND(tran.data.so_du)}}</td>
+                        <td class="text-center">
+                            {{renderFieldTime(tran.data.ngay_mo)}} 
+                        </td>
+                        <td class="text-center">
+                            {{renderFieldTime(tran.data.ngay_tai_ky)}} 
+                        </td>
+                        <td class="text-center"> {{tran.data.so_ngay_con_lai}} </td>
+                        <td class="text-center"> {{formatVND(tran.data.giatri_giao_dich)}} </td>
+                        <td class="text-center"> {{formatVND(tran.data.so_tien_thu_phi)}} </td>
+                        <td class="text-center">  
+                            <div class="" [ngClass]="renderClassStatus(tran.status)">
+                                {{this.renderContentStatus(tran.status)}}
+                            </div> 
+                        </td>
+                        <td class="text-center"> {{tran.created_branch_code}} </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card-footer bg-white p-0">
+        <div class="footable-paging">
+            <mat-paginator [length]="pageEvent.length" [pageIndex]="pageEvent.pageIndex" [pageSize]="pageEvent.pageSize"
+                [pageSizeOptions]="[5, 10, 25, 100]" (page)="setPaginatorData($event)"></mat-paginator>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,335 @@
+<div class="d-flex justify-content-between mb-0" mat-dialog-title>
+    <div class="d-flex text-start justify-content-center">
+        <h5>CHI TIẾT GIAO DỊCH NHẬN CHUYỂN NHƯỢNG</h5>
+        <div class="text-white tranfer-alert-status text-center ver" [ngClass]="renderClassStatus(data.status)">
+            {{this.renderContentStatus(data.status)}}
+        </div>
+    </div>
+    <button type="button" mat-button class="float-end btn-light" data-dismiss="modal" (click)="closeFormDialog('close')"
+        aria-hidden="true">×</button>
+</div>
+
+<div mat-dialog-content>
+    <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+        <p>Đang tải dữ liệu</p>
+    </ngx-spinner>
+
+    <form class="" [formGroup]="form">
+        <h5>THÔNG TIN ĐƠN VỊ CHUYỂN NHƯỢNG</h5>
+        <div class="form-group row g-3">
+            <div class="col-3">
+                <label>Đơn vị chuyển nhượng</label>
+                <input formControlName="sell_branch_code" type="text" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-3">
+                <label>NVTV</label>
+                <input formControlName="sell_created_user" type="text" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-3">
+                <label>GDV</label>
+                <input formControlName="sell_teller_user" type="text" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-3">
+                <label>KSV</label>
+                <input formControlName="sell_approved_user" type="text" class="form-control form-control-sm" />
+            </div>
+        </div>
+
+        <p class="text-center fst-italic">Lệnh đặt chuyển nhượng TKTK/GTCG <span class="fw-bold text-danger">{{f["sell_account_num"].value}}</span> được duyệt và cập nhật QSH thành công vào CORE lúc <span class="fw-bold text-danger">{{f["sell_approved_date"].value}}</span></p>
+
+        <br/>
+        <h5>THÔNG TIN LỆNH NHẬN CHUYỂN NHƯỢNG</h5>
+        <div class="form-group row g-3">
+            <div class="col-3">
+                <label>Số TKTK/GTCG</label>
+                <input formControlName="buy_account_num" type="text" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-3">
+                <label>Ngày giao dịch</label>
+                <input formControlName="transaction_date" type="text" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-3">
+                <label>Mã loại hình</label>
+                <input formControlName="buy_account_class" type="text" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-3">
+                <label>Lãi suất khách hàng nhận chuyển nhượng</label>
+                <input formControlName="buy_interest_rate" type="text" class="form-control form-control-sm" />
+            </div>
+        </div>
+
+        <div class="form-group row g-3">
+            <div class="col-3">
+                <label>Số dư TKTK/GTCG</label>
+                <input formControlName="buy_account_balance" mask="separator.0" type="text" class="form-control form-control-sm" mask="separator.2" thousandSeparator="."/>
+            </div>
+
+            <div class="col-3">
+                <label>Thời gian nắm giữ còn lại</label>
+                <input formControlName="buy_remain_day" type="text" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-3">
+                <label>Ngày mở</label>
+                <input formControlName="open_date" type="text" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-3">
+                <label>Ngày đến hạn</label>
+                <input formControlName="expired_date" type="text" class="form-control form-control-sm" />
+            </div>
+        </div>
+
+        <div class="form-group row g-3">
+            <div class="col-3">
+                <label>Số tiền phí nhận chuyển nhượng</label>
+                <input formControlName="buy_fee" mask="separator.0"  type="text" class="form-control form-control-sm" mask="separator.2" thousandSeparator="."/>
+            </div>
+
+            <div class="col-3">
+                <label>Trạng thái</label>
+                <ng-select [items]="statusList" bindLabel="name" bindValue="code"
+                    formControlName="buy_status" [clearable]=false [selectOnTab]="true"
+                    placeholder="--- Tất cả ---" class="form-control">
+                </ng-select>
+            </div>
+
+            <div class="col-3">
+                <label>Giá trị giao dịch</label>
+                <input formControlName="buy_trans_value" mask="separator.0"  type="text" class="form-control form-control-sm" mask="separator.2" thousandSeparator="."/>
+            </div>            
+
+            <div class="col-3">
+                <label>Số tiền KH phải trả</label>
+                <input formControlName="buy_payment_amount" mask="separator.0"  type="text" class="form-control form-control-sm" mask="separator.2" thousandSeparator="."/>
+            </div>
+        </div>
+
+        <br/>
+        <h5>THÔNG TIN KHÁCH HÀNG NHẬN CHUYỂN NHƯỢNG</h5>
+        <div class="form-group row g-3">
+            <div class="col-4">
+                <label>Họ và tên</label>
+                <input formControlName="buy_fullname" type="text" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-4">
+                <label>Số CIF</label>
+                <input formControlName="buy_cif" type="text" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-4">
+                <label>Hình thức tái ký khi đến hạn</label>
+                <ng-select [items]="PAYOUT_EXPIRE_TYPE_CODE" bindLabel="name" bindValue="name"
+                        formControlName="payout_expire_type" [clearable]=false [selectOnTab]="true" class="form-control">
+                </ng-select>
+            </div>
+        </div>
+
+        <div class="form-group row g-3">
+            <div class="col-3">
+                <label>Họ và tên KH của TKTT nhận lãi</label>
+                <input formControlName="payout_fullname" type="text" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-3">
+                <label>Số TKTT nhận lãi của KH</label>
+                <ng-select [items]="payoutAccountNumList" bindLabel="accountNum" bindValue="accountNum" [ngClass]="{ 'is-invalid': submitted && f.buy_payout_acc_num.errors }"
+                        formControlName="buy_payout_acc_num" [clearable]=false [selectOnTab]="true"
+                        placeholder="--- Chọn số tài khoản thanh toán nhận lãi ---" class="form-control">
+                </ng-select>
+                <div *ngIf="submitted && f.buy_payout_acc_num.errors" class="invalid-feedback">
+                    <small *ngIf="f.buy_payout_acc_num.errors?.required" >Vui lòng chọn số tài khoản thanh toán</small>
+                </div>
+            </div>
+
+            <div class="col-3">
+                <label>Số Seri TKTK/GTCG</label>
+                <input formControlName="buy_seri_num" type="text" class="form-control form-control-sm" [ngClass]="{ 'is-invalid': submitted && f.buy_seri_num.errors }"/>
+                <div *ngIf="submitted && f.buy_seri_num.errors" class="invalid-feedback">
+                    <small *ngIf="f.buy_seri_num.errors?.required" >Vui lòng chọn số Seri TKTK/GTCG</small>
+                </div>
+            </div>
+
+            <div *ngIf="permit.is_send_approve" class="col-3 d-flex justify-content-start align-items-end">
+                <button *ngIf="isShowButtonSeri" (click)="onGetSeriNum()" type="button" class="btn btn-info ms-2" [disabled]="isLoadingGetSeriNum">
+                    <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoadingGetSeriNum, '': !isLoadingGetSeriNum}"></i> 
+                    Xem số Seri hiện tại
+                </button>
+                <button *ngIf="isShowButtonConfirmSeri" (click)="onConfirmSeriNum()" type="button" class="btn btn-info ms-2" [disabled]="isLoadingConfirmSeriNum">
+                    <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoadingConfirmSeriNum, '': !isLoadingConfirmSeriNum}"></i> 
+                    Xác nhận lấy số Seri
+                </button>
+            </div>
+
+            <!-- <div class="col-6">
+                <label>Số Seri TKTK/GTCG</label>
+                <div class="row g-3">
+                    <div class="col-4">
+                        <input formControlName="buy_seri_num" type="text" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-4">
+                        <button *ngIf="isShowButtonSeri" (click)="onGetSeriNum()" type="button" class="btn btn-info ms-2" [disabled]="isLoadingGetSeriNum">
+                            <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoadingGetSeriNum, '': !isLoadingGetSeriNum}"></i> 
+                            Xem số Seri hiện tại
+                        </button>
+                    </div>
+                    <div class="col-4">
+                        <button *ngIf="isShowButtonConfirmSeri" (click)="onConfirmSeriNum()" type="button" class="btn btn-info ms-2" [disabled]="isLoadingConfirmSeriNum">
+                            <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoadingConfirmSeriNum, '': !isLoadingConfirmSeriNum}"></i> 
+                            Xác nhận lấy số Seri
+                        </button>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+
+        <br/>
+        <h5>THÔNG TIN THANH TOÁN</h5>
+        <div class="form-group row g-3">
+            <div class="col-4">
+                <label>Hình thức thanh toán</label>
+                <ng-select [items]="paymentMethodList" bindLabel="name" bindValue="code" 
+                        formControlName="buy_payment_method" [clearable]=false [selectOnTab]="true"
+                        placeholder="--- Chọn hình thức thanh toán ---" class="form-control">
+                </ng-select>
+            </div>
+
+            <div class="col-4">
+                <label>Số tài khoản thanh toán</label>
+                <input formControlName="buy_payment_account_no" type="text" class="form-control form-control-sm" />
+                <!-- <ng-select [items]="accountNumList" bindLabel="accountNum" bindValue="accountNum" [ngClass]="{ 'is-invalid': submitted && f.buy_payment_account_no.errors }"
+                        formControlName="buy_payment_account_no" [clearable]=false [selectOnTab]="true"
+                        placeholder="--- Chọn số tài khoản thanh toán ---" class="form-control">
+                </ng-select>
+                <div *ngIf="submitted && f.buy_payment_account_no.errors" class="invalid-feedback">
+                    <small *ngIf="f.buy_payment_account_no.errors?.required" >Vui lòng chọn số tài khoản thanh toán</small>
+                </div> -->
+            </div>
+
+            <div class="col-4">
+                <label>Số dư khả dụng</label>
+                <input formControlName="buy_account_available" mask="separator.0"  type="text" class="form-control form-control-sm" mask="separator.2" thousandSeparator="."/>
+                <!-- <input formControlName="buy_account_available" [ngClass]="{ 'is-invalid': submitted && f.buy_account_available.errors }" type="text" class="form-control form-control-sm" /> -->
+                <!-- <div *ngIf="submitted && f.buy_account_available.errors" class="invalid-feedback">
+                    <small *ngIf="f.buy_account_available.errors?.required" >Vui lòng số dư khả dụng</small>
+                </div> -->
+            </div>
+        </div>
+
+        <div class="form-group row g-3">
+            <div class="col-4">
+                <label>Chủ tài khoản</label>
+                <input formControlName="buy_fullname" type="text" class="form-control form-control-sm" />
+                <!-- <input formControlName="buy_fullname" [ngClass]="{ 'is-invalid': submitted && f.buy_fullname.errors }" type="text" class="form-control form-control-sm" /> -->
+                <!-- <div *ngIf="submitted && f.buy_fullname.errors" class="invalid-feedback">
+                    <small *ngIf="f.buy_fullname.errors?.required" >Vui lòng chọn loại hóa đơn</small>
+                </div> -->
+            </div>
+
+            <div class="col-4">
+                <label>Loại tiền</label>
+                <input formControlName="buy_payment_ccy" type="text" class="form-control form-control-sm" />
+                <!-- <input formControlName="buy_payment_ccy" [ngClass]="{ 'is-invalid': submitted && f.buy_payment_ccy.errors }" type="text" class="form-control form-control-sm" /> -->
+                <!-- <div *ngIf="submitted && f.buy_payment_ccy.errors" class="invalid-feedback">
+                    <small *ngIf="f.buy_payment_ccy.errors?.required" >Vui lòng nhập loại tiền</small>
+                </div> -->
+            </div>
+
+            <div class="col-4">
+                <label>Mã khách hàng</label>
+                <input formControlName="buy_cif" type="text" class="form-control form-control-sm" />
+                <!-- <input formControlName="buy_cif" [ngClass]="{ 'is-invalid': submitted && f.buy_cif.errors }" type="text" class="form-control form-control-sm" /> -->
+                <!-- <div *ngIf="submitted && f.buy_cif.errors" class="invalid-feedback">
+                    <small *ngIf="f.buy_cif.errors?.required" >Vui lòng nhập mã khách hàng</small>
+                </div> -->
+            </div>
+        </div>
+
+        <div class="form-group row g-3">
+            <div class="col-4">
+                <label>CMND/CCCD/HC</label>
+                <input formControlName="buy_id_num" type="text" class="form-control form-control-sm" />
+                <!-- <input formControlName="buy_id_num" [ngClass]="{ 'is-invalid': submitted && f.buy_id_num.errors }" type="text" class="form-control form-control-sm" /> -->
+                <!-- <div *ngIf="submitted && f.buy_id_num.errors" class="invalid-feedback">
+                    <small *ngIf="f.buy_id_num.errors?.required" >Vui lòng nhập CMND/CCCD/HC</small>
+                </div> -->
+            </div>
+
+            <div class="col-4">
+                <label>Mã nhân viên kinh doanh</label>
+                <ng-select [items]="directEmpList" bindLabel="hrHoTen" bindValue="hrMSNV" [ngClass]="{ 'is-invalid': submitted && f.kpi_direct.errors }"
+                        formControlName="kpi_direct" [clearable]=false [selectOnTab]="true" dropdownPosition="top"
+                        placeholder="--- Chọn nhân viên kinh doanh ---" class="form-control">
+                </ng-select>
+                <!-- <div *ngIf="submitted && f.kpi_direct.errors" class="invalid-feedback">
+                    <small *ngIf="f.kpi_direct.errors?.required" >Vui lòng chọn nhân viên kinh doanh</small>
+                </div> -->
+            </div>
+
+            <div class="col-4">
+                <label>Mã KPI gián tiếp</label>
+                <ng-select [items]="inDirectEmpList" bindLabel="hrHoTen" bindValue="hrMSNV" [ngClass]="{ 'is-invalid': submitted && f.kpi_indirect.errors }"
+                        formControlName="kpi_indirect" [clearable]=false [selectOnTab]="true" dropdownPosition="top"
+                        placeholder="--- Chọn nhân viên gián tiếp ---" class="form-control">
+                </ng-select>
+                <!-- <div *ngIf="submitted && f.kpi_indirect.errors" class="invalid-feedback">
+                    <small *ngIf="f.kpi_indirect.errors?.required" >Vui lòng chọn nhân viên gián tiếp</small>
+                </div> -->
+            </div>
+        </div>
+
+        <br/>
+        <h5>THÔNG TIN TƯ VẤN</h5>
+        <div class="form-group row g-3">
+            <div class="col-6">
+                <label>ĐƠN VỊ</label>
+                <input formControlName="created_branch_code" type="text" class="form-control form-control-sm" />
+            </div>
+
+            <div class="col-6">
+                <label>Thời gian nhập</label>
+                <input formControlName="created_date" type="text" class="form-control form-control-sm" />
+            </div>
+        </div>
+
+        <p class="text-center fst-italic" *ngIf="f['xref_id'].value">Số REF được tạo ra sau khi Hạch toán vào CORE <span class="fw-bold text-danger">{{f["xref_id"].value}}</span></p>
+        <p class="text-center fst-italic" *ngIf="f['teller_user'].value">Lệnh đặt nhận chuyển nhượng được xác nhận bởi GDV <span class="fw-bold text-danger">{{f["teller_user"].value}}</span></p>
+        <p class="text-center fst-italic" *ngIf="f['approved_user'].value">Lệnh đặt nhận chuyển nhượng TKTK/GTCG <span class="fw-bold text-danger">{{f["buy_account_num"].value}}</span> được duyệt và cập nhật QSH thành công vào CORE lúc <span class="fw-bold text-danger">{{f["approved_date"].value}}</span> bởi KSV <span class="fw-bold text-danger">{{f["approved_user"].value}}</span></p>
+    </form>
+</div>
+
+<div mat-dialog-actions class="pull-right">
+    <button *ngIf="permit.is_print_contract" (click)="onPrintContract()" type="button" class="btn btn-success" [disabled]="isLoadingPrintContract">
+        <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoadingPrintContract, '': !isLoadingPrintContract}"></i>
+        In hợp đồng
+    </button>
+
+    <button *ngIf="permit.is_send_approve && isShowButtonActionGDV" (click)="onSendApproved()" type="button" class="btn btn-info ms-2" [disabled]="isLoading">
+        <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i> 
+        Gửi duyệt
+    </button>
+
+    <button *ngIf="permit.is_delete && isShowButtonActionGDVDelete" (click)="onDelete()" type="button" class="btn btn-danger ms-2" [disabled]="isLoadingDelete">
+        <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoadingDelete, '': !isLoadingDelete}"></i> 
+        Xóa lệnh
+    </button>
+
+    <button *ngIf="permit.is_approve && isShowButtonActionKSV" (click)="onApproved()" type="button" class="btn btn-info ms-2" [disabled]="isLoadingApproved">
+        <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoadingApproved, '': !isLoadingApproved}"></i> 
+        Duyệt
+    </button>
+
+    <button *ngIf="permit.is_reject && isShowButtonActionKSVReject" (click)="onReject()" type="button" class="btn btn-danger ms-2" [disabled]="isLoadingReject">
+        <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoadingReject, '': !isLoadingReject}"></i> 
+        Từ chối
+    </button>
+
+    <button type="button" class="btn btn-secondary ms-2" (click)="closeFormDialog('close')" data-dismiss="modal">Hủy</button>
+</div>

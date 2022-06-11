@@ -1,0 +1,82 @@
+<div class="card">
+    <div class="card-body">
+      <form [formGroup]="form" class="form form-group" (ngSubmit)="onSubmit()">
+         <h4 class="mb-3 card-title">THÔNG TIN TÌM KIẾM</h4>
+         <label class="label">Nhập CCTG</label>
+         <div class="d-flex align-items-start">
+            <div>
+               <input class="form-control form-control-sm px-2" formControlName="cctg"
+                  [ngClass]="{ 'is-invalid': submitted && f.cctg.errors }" style="width: 300px;" type="text"
+                  placeholder="Nhập CCTG" />
+
+               <div *ngIf="submitted && f.cctg.errors" class="invalid-feedback ml-5">
+                  <small *ngIf="f.cctg.errors.required">Vui lòng nhập CCTG
+                  </small>
+               </div>
+            </div>
+            <button type="submit" class="btn btn-primary ms-3" [disabled]="isLoading">Tìm kiếm</button>
+            <button type="button" class="btn btn-light ms-3" (click)="resetFilter()" >Reset</button>
+         </div>
+      </form>
+    </div>
+ </div>
+ <div class="card mt-4">
+    <div class="card-body min-height-500">
+       <div class="d-flex justify-content-between">
+          <h4 class="card-title">DANH SÁCH CHUYỂN NHƯỢNG</h4>
+       </div>
+       <div class="table-responsive">
+          <table class="table table-striped table-hover table-bordered">
+             <thead>
+                <tr class="">
+                   <th scope="col">STT</th>
+                   <th scope="col">Mã CN</th>
+                   <th scope="col">Mã lệnh bán</th>
+                   <th scope="col">Mã CCTG</th>
+                   <th scope="col">Mệnh giá</th>
+                   <th scope="col">Đơn vị bán</th>
+                   <th scope="col">Đơn vị mua</th>
+                   <th scope="col">Từ ngày/Đến ngày</th>
+                   <th scope="col">Nắm giữ</th>
+                   <th scope="col">Chủ sở hữu (Trước bán)</th>
+                   <th scope="col">LS thực hưởng</th>
+                   <th scope="col">Giá chuyển nhượng</th>
+                   <th scope="col">Phí chuyển nhượng</th>
+                   <th scope="col">Ghi chú</th>
+                </tr>
+             </thead>
+             <tbody class="table-group-divider" *ngIf="transAccount.length == 0">
+                <ng-container *ngFor="let tran of transAccount, index as i">
+                   <tr class="text-center">
+                      <th scope="row">{{tran.id}}</th>
+                      <td>{{tran.cif}}</td>
+                      <td>{{tran.name}}</td>
+                      <td>{{tran.name}}</td>
+                      <td>{{tran.name}}</td>
+                      <td>{{tran.name}}</td>
+                      <td>{{tran.name}}</td>
+                      <td>{{tran.name}}</td>
+                      <td>{{tran.cmnd}}</td>
+                      <td>{{tran.cctg}}</td>
+                      <td>{{tran.balance}}</td>
+                      <td>{{tran.balance}}</td>
+                      <td>{{tran.balance}}</td>
+                      <td>{{tran.balance}}</td>
+                   </tr>
+                </ng-container>
+             </tbody>
+             <tbody class="table-group-divider" *ngIf="transAccount.length == 0">
+               <tr class="text-center">
+                  <td colspan="14">Không có dữ liệu</td>
+               </tr>
+            </tbody>
+          </table>
+       </div>
+    </div>
+    <div class="card-footer bg-white p-0">
+      <div class="footable-paging">
+          <mat-paginator [length]="pageEvent.length" [pageIndex]="pageEvent.pageIndex"
+              [pageSize]="pageEvent.pageSize" [pageSizeOptions]="[5, 10, 25, 100]"
+              (page)="setPaginatorData($event)"></mat-paginator>
+      </div>
+  </div>

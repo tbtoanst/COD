@@ -1,0 +1,139 @@
+<div class="row">
+    <div *ngIf="permit.is_query" class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title text-uppercase">Thông tin tìm kiếm</h4>
+
+                <form class="" [formGroup]="form" (ngSubmit)="onSearch()">
+                    <div class="form-group row g-3">
+                        <div class="col-6">
+                            <label>Mã loại hình</label>
+                            <ng-select [items]="accountClassList" bindLabel="name" bindValue="ma_sp"
+                                formControlName="account_class_code" [clearable]=false [selectOnTab]="true"
+                                placeholder="--- Tất cả ---" class="form-control">
+                            </ng-select>
+                        </div>
+
+                        <div class="col-3">
+                            <label>Số tài khoản</label>
+                            <input formControlName="account_num" type="text" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="col-3">
+                            <label>Số CIF</label>
+                            <input formControlName="cif" type="text" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row g-3">
+                        <div class="col-4">
+                            <label>Tình trạng tạm ứng</label>
+                            <ng-select [items]="advanceStatusList" bindLabel="name" bindValue="code"
+                                formControlName="advance_status_code" [clearable]=false [selectOnTab]="true"
+                                placeholder="--- Tất cả ---" class="form-control">
+                            </ng-select>
+                        </div>
+
+                        <div class="col-4">
+                            <label>Trạng thái</label>
+                            <ng-select [items]="statusList" bindLabel="name" bindValue="code"
+                                formControlName="status_code" [clearable]=false [selectOnTab]="true"
+                                placeholder="--- Tất cả ---" class="form-control">
+                            </ng-select>
+                        </div>
+
+                        <div class="col-4">
+                            <label>Ngày giao dịch</label>
+                            <input formControlName="trans_date" bsDatepicker type="text" class="form-control form-control-sm" placeholder="DD/MM/YYYY" />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary float-end ms-2" [disabled]="isLoading">
+                        <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i>
+                        Tìm kiếm
+                    </button>
+
+                    <button type="button" class="btn btn-light float-end" (click)="this.resetFilter()">
+                        Reset
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body min-height-500">
+                <div class="d-flex justify-content-between mb-3 form-group">
+                    <h4 class="card-title">DANH SÁCH LỆNH NHẬN CHUYỂN NHƯỢNG ({{this.pageEvent.length}})</h4>
+                    <!-- <div class="d-flex">
+                       <label class="label badge-primary p-1 px-2 ms-2 text-white">Tạm giữ ({{this.dataStatistic.CHO_GHI_NHAN_BAN}})</label>
+                       <label class="label badge-info p-1 px-2 ms-2 text-white">Chờ duyệt lệnh mua ({{this.dataStatistic.CHO_DUYET_THONG_TIN}})</label>
+                       <label class="label badge-success p-1 px-2 ms-2 text-white"> Chờ khớp lệnh ({{this.dataStatistic.CHO_MUA}})</label>
+                       <label class="label badge-warning p-1 px-2 ms-2 text-white">Từ chối ({{this.dataStatistic.TU_CHOI}})</label>
+                       <label class="label badge-secondary p-1 px-2 ms-2 text-white"> Đã xóa ({{this.dataStatistic.DA_XOA}})</label>
+                    </div> -->
+                 </div>
+                <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+                    <p>Đang tải dữ liệu</p>
+                </ngx-spinner>
+
+                <div class="table-responsive" style="position: relative;">
+                    <table class="table table-striped table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th> STT </th>
+                                <th> Mã giao dịch </th>
+                                <th> Số CIF </th>
+                                <th> Họ tên khách hàng </th>
+                                <th> Số giấy tờ định danh </th>
+                                <th> Số TKTK/GTCG </th>
+                                <th> Số dư TKTK/GTCG </th>
+                                <th> Ngày mở - ngày đến hạn </th>
+                                <th> Số tiền khách hàng thanh toán </th>
+                                <th> Trạng thái </th>
+                                <th> Người cập nhật </th>
+                                <th> Số REF </th>
+                            </tr>
+                        </thead>
+
+                        <tbody *ngIf="dataList.length > 0">
+                            <tr *ngFor="let item of dataList, index as i">
+                                <td class="text-center"> {{i + 1}} </td>
+                                <td class="text-center cursor-pointer text-decoration-underline" (click)="openForm('DETAIL', item)"> {{item.booking_id}} </td>
+                                <td class="text-center"> {{item.buy_cif}} </td>
+                                <td class="text-center"> {{item.buy_fullname}} </td>
+                                <td class="text-center"> {{item.buy_id_num}} </td>
+                                <td class="text-center"> {{item.data.stk}} </td>
+                                <td class="text-center"> {{formatVND(item.data.so_du)}} </td>
+                                <td class="text-center"> {{item.data.ngay_mo | date: 'dd/MM/yyyy'}} - {{item.data.ngay_tai_ky | date: 'dd/MM/yyyy'}}  </td>
+                                <td class="text-center"> {{formatVND(item.data.so_tien_kh_tt_nhan_cn)}} </td>
+                                <td class="text-center cursor-pointer" (click)="openForm('DETAIL', item)"> 
+                                    <div class="" [ngClass]="renderStatus(item.status).color">
+                                        {{renderStatus(item.status).name}}
+                                    </div>
+                                    <p class="text-primary fst-italic cursor-pointer mb-0 mt-2"  >Xem chi tiết</p>    
+                                </td>
+                                <td class="text-center"> {{item.updated_user}} </td>
+                                <td class="text-center"> {{item.xref_id}} </td>
+                            </tr>                           
+                        </tbody>
+
+                        <tbody *ngIf="dataList.length == 0">
+                            <tr class="text-center">
+                               <td colspan="12">Không có dữ liệu</td>
+                            </tr>
+                         </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card-footer bg-white p-0">
+                <div class="footable-paging">
+                    <mat-paginator [length]="pageEvent.length" [pageIndex]="pageEvent.pageIndex" [pageSize]="pageEvent.pageSize" [pageSizeOptions]="[5, 10, 25, 100]" (page)="setPaginatorData($event)"></mat-paginator>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

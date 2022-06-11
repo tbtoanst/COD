@@ -1,0 +1,122 @@
+<div class="card">
+   <div class="card-body">
+      <form class="form-group" [formGroup]="form" (ngSubmit)="onSearch()">
+         <h4 class="card-title">THÔNG TIN TÌM KIẾM</h4>
+         <div class="row  mb-0">
+            <div class="col-6 mb-3">
+               <label class="label">Mã loại hình</label>
+               <ng-select bindLabel="name" bindValue="ma_sp" [items]="listAccountClass" [searchable]="true" 
+                  formControlName="account_class" [clearable]="false" class="form-control">
+               </ng-select>
+            </div>
+            
+            <!-- <div class="col-2">
+               <label class="label">Trạng thái</label>
+               <ng-select bindLabel="name" bindValue="code" [items]="TRANSFER_SELL_STATUS_LIST" [searchable]="false"
+                  formControlName="status_code" [clearable]="false" class="form-control"
+                  (change)="onChangeBuyStatus($event)">
+               </ng-select>
+            </div> -->
+         </div>
+         <div class="row d-flex justify-content-start align-items-end">
+            <div class="col-2">
+               <label class="label">Số tài khoản</label>
+               <input type="text" class="form-control form-control-sm" formControlName="account_no" />
+            </div>
+            <div class="col-2">
+               <label class="label">Số CIF</label>
+               <input type="text" class="form-control form-control-sm" formControlName="cif" />
+            </div>
+          <div class="col-2">
+               <label class="label">Trạng thái</label>
+               <ng-select bindLabel="name" bindValue="code" [items]="TRANSFER_SELL_STATUS_LIST" [searchable]="false"
+                  formControlName="status_code" [clearable]="false" class="form-control"
+                  (change)="onChangeBuyStatus($event)">
+               </ng-select>
+            </div> 
+           <div class="col-2">
+               <label class="label">Ngày giao dịch</label>
+               <input formControlName="transaction_date"  type="text" class="form-control form-control-sm"
+                  placeholder="DD/MM/YYYY" [readonly]="true"/>
+            </div> 
+            <div class="col-2">
+               <button type="button" [disabled]="isLoading" class="btn btn-light me-2" (click)="resetFilter()">Reset</button>
+               <button type="submit" [disabled]="isLoading" class="btn btn-primary">Tìm kiếm</button>
+            </div>
+         </div>
+      </form>
+   </div>
+</div>
+<div class="card mt-4">
+   <div class="card-body">
+      <div class="d-flex justify-content-between mb-3 form-group">
+         <h4 class="card-title">DANH SÁCH LỆNH CHUYỂN NHƯỢNG ({{this.pageEvent.length}})</h4>
+         <!-- <div class="d-flex">
+            <label class="label badge badge-primary p-1 px-2 ms-2 text-white">Chờ ghi nhận bán ({{this.dataStatistic.CHO_GHI_NHAN_BAN}})</label>
+            <label class="label badge badge-info p-1 px-2 ms-2 text-white">Chờ duyệt thông tin bán ({{this.dataStatistic.CHO_DUYET_THONG_TIN}})</label>
+            <label class="label badge badge-success p-1 px-2 ms-2 text-white"> Chờ mua ({{this.dataStatistic.CHO_MUA}})</label>
+            <label class="label badge badge-warning p-1 px-2 ms-2 text-white">Từ chối ({{this.dataStatistic.TU_CHOI}})</label>
+            <label class="label badge badge-secondary p-1 px-2 ms-2 text-white"> Đã xóa ({{this.dataStatistic.DA_XOA}})</label>
+         </div> -->
+      </div>
+        <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+            <p>Đang tải dữ liệu</p>
+        </ngx-spinner>
+      <div class="table-responsive min-height-500">
+         <table class="table table-striped table-hover table-bordered">
+            <thead>
+               <tr class="">
+                  <th scope="col">STT</th>
+                  <th scope="col">Mã giao dịch</th>
+                  <th scope="col">Mã CIF</th>
+                  <th scope="col">Họ tên KH</th>
+                  <th scope="col">CMND/HC/CCCD</th>
+                  <th scope="col">Số tài khoản</th>
+                  <th scope="col">Số dư</th>
+                  <th scope="col">Ngày mở</th>
+                  <th scope="col">Số tiền KH thực nhận</th>
+                  <th scope="col">Trạng thái</th>
+                  <th scope="col">Người cập nhật</th>
+                  <th scope="col">Số REF</th>
+               </tr>
+            </thead>
+            <tbody class="table-group-divider" *ngIf="transferListBuy.length > 0">
+               <ng-container *ngFor="let tran of transferListBuy, index as i">
+                  <tr class="text-center">
+                     <th scope="row">{{i+1}}</th>
+                     <td class="text-decoration-underline fw-semibold cursor-pointer"
+                        (click)="openTransactionDetail(tran)">{{tran.booking_id}}</td>
+                     <td>{{tran.sell_cif}}</td>
+                     <td>{{tran.data.ho_ten}}</td>
+                     <td>{{tran.data.cmnd}}</td>
+                     <td>{{tran.account_num}}</td>
+                     <td>{{formatVND(tran.data.so_du)}}</td>
+                     <td>{{renderFieldTime(tran.data.ngay_mo)}} </td>
+                     <td>{{formatVND(tran.data.so_tien_kh_nhan_cn)}} </td>
+                     <td class="text-center  cursor-pointer"  (click)="openTransactionDetail(tran)"> 
+                        <div class="" [ngClass]="renderClassStatus(tran)">
+                            {{this.renderContentStatus(tran)}}
+                        </div>
+                        <p class="text-primary fst-italic mb-0 mt-1"  >Xem chi tiết</p>    
+                    </td>
+                     <td>{{tran.updated_user}} </td>
+                     <td class="text-decoration-underline fw-semibold cursor-pointer"
+                        (click)="openTransactionDetail(tran)"></td>
+                  </tr>
+               </ng-container>
+            </tbody>
+            <tbody class="table-group-divider" *ngIf="transferListBuy.length == 0">
+               <tr class="text-center">
+                  <td colspan="12">Không có dữ liệu</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div class="card-footer bg-white p-0">
+         <div class="footable-paging">
+            <mat-paginator [length]="pageEvent.length" [pageIndex]="pageEvent.pageIndex" [pageSize]="pageEvent.pageSize"
+               [pageSizeOptions]="[5, 10, 25, 100]" (page)="setPaginatorData($event)"></mat-paginator>
+         </div>
+      </div>
+   </div>
+</div>

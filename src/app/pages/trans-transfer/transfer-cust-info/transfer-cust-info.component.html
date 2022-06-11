@@ -1,0 +1,84 @@
+<div class="card">
+   <div class="card-body">
+      <form [formGroup]="form" class="form form-group" (ngSubmit)="onSubmit()">
+         <h4 class="mb-3 card-title">THÔNG TIN TÌM KIẾM</h4>
+         <label class="label">Nhập CCTG/TKTK/CIF/CMND/CCCD/HC</label>
+         <div class="d-flex align-items-start">
+            <div>
+               <input class="form-control form-control-sm px-2" formControlName="cif"
+                  [ngClass]="{ 'is-invalid': submitted && f.cif.errors }" style="width: 300px;" type="text"
+                  placeholder="Nhập CCTG/TKTK/CIF/CMND/CCCD/HC" />
+
+               <div *ngIf="submitted && f.cif.errors" class="invalid-feedback ml-5">
+                  <small *ngIf="f.cif.errors.required">Vui lòng Nhập CCTG/TKTK/CIF/CMND/CCCD/HC
+                  </small>
+               </div>
+            </div>
+            <button type="submit" class="btn btn-primary ms-3" [disabled]="isLoading">Tìm kiếm</button>
+            <button type="button" class="btn btn-light ms-3" (click)="resetFilter()" >Reset</button>
+         </div>
+      </form>
+   </div>
+</div>
+<div class="card mt-2">
+   <div class="card-body">
+      <div class="d-flex justify-content-between mb-3">
+         <h4 class="card-title">DANH SÁCH TKTK/CCTG</h4>
+         <button *ngIf="btnConfirmTranfer" type="button" class="btn btn-inverse-primary btn-fw me-1"
+            (click)="openFormCheckRefercence()">
+            Ghi nhận chuyển nhượng
+         </button>
+      </div>
+      <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+         <p>Đang tải dữ liệu</p>
+      </ngx-spinner>
+      <div class="table-responsive min-height-500">
+         <table class="table table-striped table-hover table-bordered">
+            <thead>
+               <tr class="">
+                  <th scope="col">STT</th>
+                  <th scope="col">Mã CIF</th>
+                  <th scope="col">Họ và tên</th>
+                  <th scope="col">CMND/HC/CCCD</th>
+                  <th scope="col">Số TKTK/CTTG</th>
+                  <th scope="col">Số dư TKTK/CTTG</th>
+                  <th scope="col">Tình trạng</th>
+                  <th scope="col">Chọn</th>
+               </tr>
+            </thead>
+            <tbody class="table-group-divider" *ngIf="transferCustomer.length > 0">
+               <ng-container *ngFor="let data of transferCustomer, index as i">
+                  <tr class="text-center">
+                     <th scope="row">{{i+1}}</th>
+                     <td>{{data.ma_cif}}</td>
+                     <td>{{data.ho_ten}}</td>
+                     <td>{{data.cmnd}}</td>
+                     <td>{{data.stk}}</td>
+                     <td>{{formatVND(data.so_du)}}</td>
+                     <td>
+                        <label class="label p-1 px-2 ms-2 text-white cursor-pointer"
+                           [ngClass]="renderStatus(data.trang_thai)">
+                           {{renderContentStatus(data.trang_thai)}}
+                        </label>
+                     </td>
+                     <td>
+                        <input [(ngModel)]="data.check" class="form-check-input" type="checkbox" [disabled]="data.trang_thai == 'HOAT_DONG' ? false : true" (change)="selectCCTG($event,data)">
+                     </td>
+                  </tr>
+               </ng-container>
+            </tbody>
+            <tbody class="table-group-divider" *ngIf="transferCustomer.length == 0">
+               <tr class="text-center">
+                  <td colspan="8">Không có dữ liệu</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <!-- <div class="card-footer bg-white p-0">
+         <div class="footable-paging">
+            <mat-paginator [length]="pageEvent.length" [pageIndex]="pageEvent.pageIndex" [pageSize]="pageEvent.pageSize"
+               [pageSizeOptions]="[5, 10, 25, 100]" (page)="setPaginatorData($event)"></mat-paginator>
+         </div>
+      </div> -->
+   </div>
+</div>

@@ -1,0 +1,273 @@
+<div class="row">
+    <div *ngIf="permit.is_query" class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title text-uppercase">Thông tin tìm kiếm</h4>
+
+                <form class="" [formGroup]="form" (ngSubmit)="onSearch()">
+                    <div class="form-group row g-3">
+                        <div class="col-4">
+                            <label>Mã đơn vị</label>
+                            <input formControlName="branch_code" type="text" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="col-4">
+                            <label>Từ ngày</label>
+                            <input formControlName="from_date" bsDatepicker type="text"
+                                class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="col-4">
+                            <label>Đến ngày</label>
+                            <input formControlName="to_date" bsDatepicker type="text"
+                                class="form-control form-control-sm" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row g-3">
+                        <div class="col-4">
+                            <label>Số hợp đồng</label>
+                            <input formControlName="contract_num" type="text" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="col-4">
+                            <label>Loại giao dịch</label>
+                            <ng-select [items]="transferTypeList" bindLabel="name" bindValue="code"
+                                formControlName="trans_type" [clearable]=false [selectOnTab]="true"
+                                placeholder="--- Tất cả ---" class="form-control">
+                            </ng-select>
+                        </div>
+
+                        <div class="col-4">
+                            <label>Trạng thái</label>
+                            <ng-select [items]="contractStatusList" bindLabel="name" bindValue="code"
+                                formControlName="status_code" [clearable]=false [selectOnTab]="true"
+                                placeholder="--- Tất cả ---" class="form-control">
+                            </ng-select>
+                        </div>
+
+                    </div>
+
+                    <button type="submit" class="btn btn-primary float-end ms-2" [disabled]="isLoading">
+                        <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i>
+                        Tìm kiếm
+                    </button>
+
+                    <button type="button" class="btn btn-light float-end">
+                        Reset
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body min-height-500">
+                <div class="d-flex pb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="wrapper">
+                            <h4 class="card-title mb-0 text-uppercase">Danh sách hợp đồng</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+                    <p>Đang tải dữ liệu</p>
+                </ngx-spinner>
+
+                <div class="table-responsive" style="position: relative;">
+                    <table class="table table-striped table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th rowspan="2"> STT </th>
+                                <th rowspan="2"> Ngày giao dịch </th>
+                                <th rowspan="2"> Số hợp đồng </th>
+                                <th rowspan="2"> Số TKTK/GTCG </th>
+                                <th colspan="5"> ĐƠN VỊ CHUYỂN NHƯỢNG </th>
+                                <th colspan="5"> ĐƠN VỊ NHẬN CHUYỂN NHƯỢNG </th>
+                                <th rowspan="2"> Hoàn tất hợp đồng </th>
+                            </tr>
+                            <tr>
+                                <th colspan="2"> Đơn vị </th>
+                                <th> Ngày upload </th>
+                                <th> Chuyển nhượng </th>
+                                <th> Tình trạng </th>
+
+                                <th colspan="2"> Đơn vị </th>
+                                <th> Ngày upload </th>
+                                <th> Nhận chuyển nhượng </th>
+                                <th> Tình trạng </th>
+                            </tr>
+                        </thead>
+
+                        <tbody *ngIf="dataList.length > 0">
+                            <tr *ngFor="let item of dataList, index as i">
+
+                                <!-- /// SELL -->
+
+                                <td class="text-center"> {{i + 1}} </td>
+                                <td class="text-center"> {{item.transaction_date | date: 'dd/MM/yyyy'}} </td>
+                                <td class="text-center"> {{item.contract_no}} </td>
+                                <td class="text-center"> {{item.account_num}} </td>
+
+                                <td class="text-center"> {{item.sell.created_branch_code}} </td>
+                                <td class="text-center">
+                                    <!-- ADD FILE -->
+                                    <div class="img-file" *ngIf="!item.sell.sell_contract && !permit.is_approve">
+                                        <div class="info-img add-file  d-flex align-items-center justify-content-center cursor-pointer"
+                                            (click)="trigerClickInputUpload($event)">
+                                            <div class="">
+                                                <img src="assets/images/plus.png">
+                                                <p class="mt-2 mb-0">Upload HĐ</p>
+                                            </div>
+                                            <input type="file" id="files-select" class="file-upload hidden" accept=".pdf"
+                                                (change)="onChangeUploadFile($event, 'SELL', item.sell.id)">
+                                        </div>
+                                    </div>
+                                    <!-- PLACEHOLDER UPLOADING -->
+                                    <div class="ph-item pr-3 placeholder-loading hidden">
+                                        <div class="ph-col-12">
+                                            <div class="ph-picture"></div>
+                                            <div class="ph-row">
+                                                <div class="ph-col-4"></div>
+                                                <div class="ph-col-8 empty"></div>
+                                                <div class="ph-col-12"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- // SHOW FILE -->
+                                    <div class="img-file form-delete" *ngIf="item.sell.sell_contract">
+                                        <div
+                                            class="info-img view-file d-flex align-items-center justify-content-center">
+                                            <div class="">
+                                                <img src="assets/images/pdf.png" class="cursor-pointer">
+                                                <p class="name text-truncate my-1 mb-0 cursor-pointer"
+                                                    (click)="onDownload('SELL', item.sell.id)">
+                                                    <b>{{item.sell.sell_contract?.file_name}}</b>
+                                                </p>
+                                            </div>
+                                            <img class="control delete mb-0 font-weight-bold" *ngIf="!permit.is_approve && item.buy.buy_contract?.status !== 'DA_DUYET'"
+                                                src="assets/images/close.png"
+                                                (click)="onDelete($event, 'SELL', item.sell.id)">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center"> {{item.sell.sell_contract?.created_at | date: 'dd/MM/yyyy'}}
+                                </td>
+                                <td class="text-center"> {{item.sell.approved_user_full_name}} </td>
+                                <td class="text-center">
+                                    <ng-container *ngIf="!permit.is_approve">
+                                        <span
+                                            class="fw-bold fst-italic">{{showTextUploadStatus(item.sell.sell_contract?.status)}}</span>
+                                    </ng-container>
+
+                                    <ng-container *ngIf="permit.is_approve">
+                                        <span *ngIf="item.sell.sell_contract?.status != 'CHO_DUYET'"
+                                            class="fw-bold fst-italic">{{showTextUploadStatus(item.sell.sell_contract?.status)}}</span>
+
+                                        <button *ngIf="item.sell.sell_contract?.status == 'CHO_DUYET'"
+                                            (click)="onApprovedCN(item.sell.id)" type="button" class="btn btn-info">
+                                            <!-- [disabled]="isLoadingApprovedCN"> -->
+                                            <!-- <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoadingApprovedCN, '': !isLoadingApprovedCN}"></i>  -->
+                                            Duyệt
+                                        </button>
+                                    </ng-container>
+                                </td>
+
+                                <!-- /// BUY -->
+
+                                <td class="text-center"> {{item.buy.created_branch_code}} </td>
+                                <td class="text-center">
+                                    <!-- ADD FILE --> 
+                                    <div class="img-file" *ngIf="!item.buy.buy_contract && !permit.is_approve">
+                                        <div class="info-img add-file  d-flex align-items-center justify-content-center cursor-pointer"
+                                            (click)="trigerClickInputUpload($event)">
+                                            <div class="">
+                                                <img src="assets/images/plus.png">
+                                                <p class="mt-2 mb-0">Upload HĐ</p>
+                                            </div>
+                                            <input type="file" id="files-select" class="file-upload hidden"
+                                                (change)="onChangeUploadFile($event,'BUY', item.buy.id)">
+                                        </div>
+                                    </div>
+                                    <!-- PLACEHOLDER UPLOADING -->
+                                    <div class="ph-item pr-3 placeholder-loading hidden">
+                                        <div class="ph-col-12">
+                                            <div class="ph-picture"></div>
+                                            <div class="ph-row">
+                                                <div class="ph-col-4"></div>
+                                                <div class="ph-col-8 empty"></div>
+                                                <div class="ph-col-12"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- // SHOW FILE -->
+                                    <div class="img-file form-delete" *ngIf="item.buy.buy_contract">
+                                        <div class="info-img view-file d-flex align-items-center justify-content-center">
+                                            <div class="">
+                                                <img src="assets/images/pdf.png" class="cursor-pointer">
+                                                <p class="name text-truncate my-1 mb-0 cursor-pointer"
+                                                    (click)="onDownload('BUY', item.buy.id)">
+                                                    <b>{{item.buy.buy_contract?.file_name}}</b>
+                                                </p>
+                                            </div>
+                                            <img class="control delete mb-0 font-weight-bold" *ngIf="!permit.is_approve && item.buy.buy_contract?.status !== 'DA_DUYET'"
+                                                src="assets/images/close.png"
+                                                (click)="onDelete($event, 'BUY', item.buy.id)">
+                                        </div>
+                                    </div>
+
+
+                                </td>
+                                <td class="text-center"> {{item.buy.buy_contract?.created_at | date: 'dd/MM/yyyy'}}
+                                </td>
+                                <td class="text-center"> {{item.buy.approved_user_full_name}} </td>
+                                <td class="text-center">
+                                    <ng-container *ngIf="!permit.is_approve">
+                                        <span
+                                            class="fw-bold fst-italic">{{showTextUploadStatus(item.buy.buy_contract?.status)}}</span>
+                                    </ng-container>
+
+                                    <ng-container *ngIf="permit.is_approve">
+                                        <span *ngIf="item.buy.buy_contract?.status != 'CHO_DUYET'"
+                                            class="fw-bold fst-italic">{{showTextUploadStatus(item.buy.buy_contract?.status)}}</span>
+
+                                        <button *ngIf="item.buy.buy_contract?.status == 'CHO_DUYET'"
+                                            (click)="onApprovedNCN(item.buy.id)" type="button" class="btn btn-info">
+                                            <!-- [disabled]="isLoadingApprovedCN"> -->
+                                            <!-- <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoadingApprovedCN, '': !isLoadingApprovedCN}"></i>  -->
+                                            Duyệt
+                                        </button>
+                                    </ng-container>
+                                </td>
+
+                                <td>
+                                    <button *ngIf="permit.is_approve && checkBtnComplete(item)"
+                                        (click)="onCompleteTrans(item.id)" type="button" class="btn btn-success w-100">
+                                        Xác nhận
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                        <tbody *ngIf="dataList.length == 0">
+                            <tr class="text-center">
+                                <td colspan="15">Không có dữ liệu</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+
+            <div class="card-footer bg-white p-0">
+                <div class="footable-paging">
+                    <mat-paginator [length]="pageEvent.length" [pageIndex]="pageEvent.pageIndex"
+                        [pageSize]="pageEvent.pageSize" [pageSizeOptions]="[5, 10, 25, 100]"
+                        (page)="setPaginatorData($event)"></mat-paginator>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

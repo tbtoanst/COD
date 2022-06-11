@@ -1,0 +1,48 @@
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-white text-center ver p-3" [ngClass]="classTransactionStatus()">
+                    {{this.transactionStatus()}}
+                </div>
+                <button *ngIf="isBlock" type="button" (click)= "this.lockTransaction()"  class="btn btn-danger float-end">
+                    Khóa
+                </button>
+                <button *ngIf="!isBlock" type="button" (click)= "this.lockTransaction()"  class="btn btn-success float-end">
+                    Mở khóa
+                </button>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <mat-tab-group mat-align-tabs="start">
+                    <mat-tab label="Danh sách các lệnh đặt chuyển nhượng chưa được duyệt">
+                        <app-trans-transfer-not-approved  [isBlock]="isBlock"></app-trans-transfer-not-approved>
+                    </mat-tab>
+    
+                    <mat-tab label="Danh sách các lệnh đặt nhận chuyển nhượng chưa được duyệt">
+                        <app-receive-transfer-not-approved></app-receive-transfer-not-approved>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <button *ngIf="!isBlock" type="button" class="btn btn-danger float-end me-2" (click)="this.clearAllData()">
+                     Làm sạch dữ liệu
+                </button>
+
+                <button type="button" class="btn btn-info float-end me-2">
+                    Xuất file báo cáo khớp lệnh trong ngày 
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

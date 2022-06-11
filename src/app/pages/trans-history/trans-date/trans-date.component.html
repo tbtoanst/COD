@@ -1,0 +1,128 @@
+<div class="card">
+    <div class="card-body">
+        <form [formGroup]="form" class="form form-top" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <h4 class="card-title">THÔNG TIN TÌM KIẾM</h4>
+                <div class="row">
+                    <div class="col-2">
+                        <label class="label">Ngày giao dịch</label>
+                    </div>
+                    <div class="col-2">
+                        <label class="label">Đơn vị</label>
+                    </div>
+                </div>
+                <div class="row ">
+                    <div class="col-2">
+                            <input formControlName="trans_day" bsDatepicker type="text" class="form-control form-control-sm" placeholder="DD/MM/YYYY" />
+                        <div *ngIf="submitted && f.trans_day.errors" class="invalid-feedback ml-5">
+                            <small *ngIf="f.trans_day.errors.required">Vui lòng nhập ngày giao dịch
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <input class="form-control form-control-sm " formControlName="branch"
+                            [ngClass]="{ 'is-invalid': submitted && f.branch.errors }" type="text"
+                            placeholder="Chọn đơn vị" />
+                        <div *ngIf="submitted && f.branch.errors" class="invalid-feedback ml-5">
+                            <small *ngIf="f.branch.errors.required">Vui lòng chọn đơn vị
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <button type="submit" class="btn btn-primary" [disabled]="isLoading">Tìm kiếm</button>
+                        <button type="button" class="btn btn-light ms-2" (click)="resetFilter()" >Reset</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="col-12 grid-margin stretch-card mt-4">
+    <div class="card">
+        <div class="card-body min-height-500">
+            <div class="d-flex pb-3">
+                <div class="d-flex align-items-center">
+                    <div class="wrapper">
+                        <h4 class="card-title mb-0 text-uppercase">DANH SÁCH CHUYỂN NHƯỢNG</h4>
+                    </div>
+                </div>
+            </div>
+
+            <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+                <p>Đang tải dữ liệu</p>
+            </ngx-spinner>
+
+            <div class="table-responsive" style="position: relative;">
+                <table class="table table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th rowspan="2"> STT </th>
+                            <th rowspan="2"> Số TK CCTG </th>
+                            <th rowspan="2"> Mệnh giá</th>
+                            <th rowspan="2"> Ngày phát hành/ Ngày đến hạn</th>
+                            <th rowspan="2"> Tình trạng</th>
+                            <th colspan="5"> Thông tin khách hàng chuyển nhượng (bán) </th>
+                            <th colspan="5"> Thông tin khách hàng chuyển nhượng (Mua) </th>
+                            <th rowspan="2"> Lệnh chuyển nhượng ưu tiên </th>
+                            <th rowspan="2"> Giá chuyển nhượng/ nhận chuyển nhượng (Giá trên hợp đồng) </th>
+                        </tr>
+                        <tr>
+                            <th> Đơn vị </th>
+                            <th> Họ tên KH</th>
+                            <th> Số CMND/HC/CCCD/ĐKKD</th>
+                            <th> LS thực của CCTG tại thời điểm CN</th>
+                            <th> Phí CN (Chưa VAT)</th>
+                            <th> Đơn vị </th>
+                            <th> Họ tên KH</th>
+                            <th> Số CMND/HC/CCCD/ĐKKD</th>
+                            <th> LS thực của CCTG tại thời điểm CN</th>
+                            <th> Phí nhận (Chưa VAT)</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr *ngFor="let item of dataList, index as i">
+                            <td class="text-center"> {{i + 1}} </td>
+                            <td class="text-center"> {{item.so}} </td>
+                            <td class="text-center"> {{item.ntbccqt | date: 'dd/MM/yyyy'}} </td>
+                            <td class="text-center"> {{item.ntbccqt | date: 'dd/MM/yyyy'}} </td>
+                            <td class="text-center"> {{i + 1}} </td>
+                            <td class="text-center"> {{item.so}} </td>
+                            <td class="text-center"> {{i + 1}} </td>
+                            <td class="text-center"> {{item.so}} </td>
+                            <td class="text-center"> {{i + 1}} </td>
+                            <td class="text-center"> {{item.so}} </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white p-0">
+            <div class="footable-paging">
+                <mat-paginator [length]="pageEvent.length" [pageIndex]="pageEvent.pageIndex"
+                    [pageSize]="pageEvent.pageSize" [pageSizeOptions]="[5, 10, 25, 100]"
+                    (page)="setPaginatorData($event)"></mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>

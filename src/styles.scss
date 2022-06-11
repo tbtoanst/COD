@@ -1,0 +1,232 @@
+/* You can add global styles to this file, and also import other style files */
+$assetPath: "/assets/images";
+@import "./assets/scss/theme/style.scss";
+
+html,
+body {
+  height: 100%;
+  overflow-x: visible;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+table tr th {
+  text-align: center !important;
+  text-transform: uppercase !important;
+}
+.table th,
+.table thead th {
+  font-weight: 600;
+}
+
+.ng-select.ng-select-disabled > .ng-select-container {
+  background-color: #f0f2f4;
+  color: #67757c;
+}
+
+.ng-select .ng-select-container {
+  height: 100% !important;
+}
+
+.ng-select.ng-select-multiple {
+  height: auto !important;
+}
+
+.ng-select.form-control {
+  padding: 1px;
+  border: none;
+}
+
+.ng-select.form-control.is-invalid .ng-select-container {
+  border-color: $danger;
+}
+
+.ng-select.form-control.is-invalid.ng-select-focused:not(.ng-select-opened)
+  > .ng-select-container {
+  border-color: $danger;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+    0 0 0 3px rgba(255, 0, 0, 0.1);
+}
+
+.ng-select.ng-select-multiple
+  .ng-select-container
+  .ng-value-container
+  .ng-placeholder {
+  top: inherit;
+}
+
+.ng-select.ng-select-single .ng-select-container .ng-value-container,
+.ng-select.ng-select-single .ng-select-container .ng-value-container .ng-value {
+  overflow: initial !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.my-table-height-scroll-250 {
+  max-height: 250px;
+  overflow-y: scroll;
+}
+
+.cdk-overlay-container {
+  z-index: 1050;
+}
+
+.sidebar-fixed .nav {
+  overflow: auto;
+  color: #00000000;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #666666ff;
+  }
+
+  &::-webkit-scrollbar {
+    width: 14px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-clip: content-box;
+    border: 4px solid transparent;
+    border-radius: 7px;
+    box-shadow: inset 0 0 0 10px;
+  }
+
+  &::-webkit-scrollbar-button {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+}
+
+///////////////////////////////////////////////////////
+
+.content-wrapper {
+  padding: 15px 17px !important;
+}
+.table th,
+.table td {
+  white-space: normal;
+  padding: 10px 5px;
+  font-size: 13px;
+}
+.grid-margin {
+  margin-bottom: 10px;
+}
+.form-control-sm {
+  min-height: 38px;
+  padding: 5px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+.form-group label {
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 2px;
+}
+.card .card-title {
+  font-size: 14px;
+  // margin: 5px;
+}
+
+.custom-textarea-padding {
+  padding: 10px;
+}
+
+.subtable-box-shadow {
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 15px !important;
+}
+
+.fs-12-px {
+  font-size: 12px !important;
+}
+
+.fs-13-px {
+  font-size: 13px !important;
+}
+.min-height-500 {
+  min-height: 50vh !important;
+  // height: 52vh;
+}
+.card .card-body{
+  padding: 20px;
+}
+.form-check-input {
+  cursor: pointer;
+  width: 1.5em;
+  height: 1.5em;
+}
+.border-left{
+  border-left: solid 1px black;
+}
+.transaction-detail{
+  height: 100vh;
+  overflow: auto !important;
+  padding-bottom: 10px;
+}
+.transaction-detail .form-control{
+  padding: 8px;
+}
+
+//////////////////////bs-datepicker
+.theme-dark-blue .bs-datepicker-head {
+  background-color: #1825aa;
+}
+
+.theme-dark-blue .bs-datepicker-body table td span.selected, .theme-dark-blue .bs-datepicker-body table td.selected span, .theme-dark-blue .bs-datepicker-body table td span[class*=select-]:after, .theme-dark-blue .bs-datepicker-body table td[class*=select-] span:after {
+  background-color: #1825aa;
+}
+
+.bs-datepicker-body table th {
+  color: #1825aa82;
+}
+
+.bs-datepicker-body table td {
+  color: #1825aa;
+}
+
+.theme-dark-blue .bs-datepicker-body table td.week span {
+  color: #1825aa6e;
+}
+
+.theme-dark-blue .bs-datepicker-body table td span.selected, .theme-dark-blue .bs-datepicker-body table td.selected span, .theme-dark-blue .bs-datepicker-body table td span[class*=select-]:after, .theme-dark-blue .bs-datepicker-body table td[class*=select-] span:after {
+  background-color: #1825aa;
+}
+
+.bs-datepicker-head button.current {
+  text-transform: uppercase;
+}
+
+.bs-datepicker-body table.months td {
+  text-transform: uppercase;
+}
+.tranfer-alert-status{
+  position: relative;
+  top: -10px;
+  padding: 5px 65px;
+  margin-left: 20px;
+  padding-top: 10px;
+}
+.badge-pending{
+  background-color:#b086e9
+}
+.hidden{
+  display: none !important;
+}
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.modal-backdrop {
+  z-index: 1055;
+}

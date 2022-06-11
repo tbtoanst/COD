@@ -1,0 +1,235 @@
+<div class="d-flex justify-content-between mb-0" mat-dialog-title>
+    <div class="d-flex text-start justify-content-center">
+        <h5>CHI TIẾT TKTK/CCTG CHUYỂN NHƯỢNG</h5>
+        <div class="text-white tranfer-alert-status" [ngClass]="renderClassStatus(data.status)">
+            {{this.renderContentStatus(data.status)}}
+        </div>
+    </div>
+    <button type="button" mat-button class="float-end btn-light" data-dismiss="modal" (click)="closeFormDialog('close')"
+        aria-hidden="true">×</button>
+</div>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div mat-dialog-content class="form-group">
+        <!-- <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+            <p>Đang tải dữ liệu</p>
+        </ngx-spinner> -->
+        <div class="row">
+            <div class="col-6">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="w-100 me-2 ">
+                        <label class="form-group label">Số TKTK/CCTG:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="stk" />
+                    </div>
+                    <div class="w-100 me-2">
+                        <label class="label">Số Seri:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="seri" />
+                    </div>
+
+                    <div class="w-100 me-2">
+                        <label class="label">Mã loại hình:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="type_code" />
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="w-100 me-2">
+                        <label class="label">Số dư:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="balance"
+                            mask="separator.2" thousandSeparator="." />
+                    </div>
+                    <div class="w-100 me-2">
+                        <label class="label">Lãi suất:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="laisuattktt" />
+                    </div>
+
+                    <div class="w-100 me-2">
+                        <label class="label">Ngày mở:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="tran_created" />
+                    </div>
+                    <div class="w-100 me-2">
+                        <label class="label">Ngày đến hạn:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="tran_expried" />
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="w-100 me-2">
+                        <label class="label">Ngày giao dịch:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="transfer_date" />
+                    </div>
+
+                    <div class="w-100 me-2">
+                        <label class="label">Ngày chuyển nhượng gần nhất:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="transfer_date_min" />
+                    </div>
+
+                    <div class="w-100 me-2">
+                        <label class="label">Thời gian đã nắm giữ:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="hold_time" />
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="w-100 me-3">
+                        <label class="label">Lãi suất chuyển nhượng:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="laisuat" />
+                    </div>
+
+                    <div class="w-100 me-3">
+                        <label class="label">Số tiền phí:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="money_cost"
+                            mask="separator.2" thousandSeparator="." />
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="w-100 me-2">
+                        <label class="label">Giá trị giao dịch:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="tranfer_value"
+                            mask="separator.2" thousandSeparator="." />
+                    </div>
+                    <div class="w-100 me-2">
+                        <label class="label">Số tiền KH nhận khi chuyển nhượng:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="tranfer_money_handle"
+                            mask="separator.2" thousandSeparator="." />
+                    </div>
+                </div>
+
+                <h5>THÔNG TIN THANH TOÁN</h5>
+                <div class="row">
+                    <div class="col-4">
+                        <label class="label">Hình thức thanh toán:</label>
+                        <ng-select bindLabel="name" bindValue="code" [items]="PAYMENT_METHOD_LIST" [searchable]="false"
+                            formControlName="payment_method" [clearable]="false"
+                            (change)="onChangePaymentMethod($event)" class="form-control">
+                        </ng-select>
+                    </div>
+
+                    <div class="col-4" *ngIf="data.sell_payment_method == 'CK'">
+                        <label class="label">Tên chủ TKTT:</label>
+                        <input class="form-control form-control-sm mb-2" type="text" formControlName="sell_fullname" />
+                    </div>
+                    <div class="col-4" *ngIf="data.sell_payment_method == 'CK'">
+                        <label class="label">Số TKTT:</label>
+                        <input class="form-control form-control-sm" type="text"
+                            formControlName="sell_payment_account_no" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT-PANEL -->
+            <div class="col-6 border-start">
+                <div class="d-flex align-items-center mb-2">
+                    <h5 class="mb-0">THÔNG TIN CHỦ SỞ HỮU</h5>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="w-100 me-2">
+                        <label class="label">Họ và tên:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="cus_name" />
+                    </div>
+                    <div class="w-100 me-2">
+                        <label class="label">CIF:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="cus_cif" />
+                    </div>
+                </div>
+                <ng-container *ngFor="let cust_other of tranData.ds_dong_chu_so_huu, index as i">
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="w-100 me-2">
+                            <label class="label">Đồng chủ sở hữu:</label>
+                            <input class="form-control form-control-sm" type="text"
+                                formControlName="cus_another_name" value="{{cust_other.tenDcsh}}" disabled/>
+                        </div>
+                        <div class="w-100 me-2">
+                            <label class="label">CIF ĐCSH:</label>
+                            <input class="form-control form-control-sm" type="text" formControlName="cus_another_cif" value="{{cust_other.cifDcsh}}" disabled/>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <h5>THÔNG TIN TƯ VẤN</h5>
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="w-100 me-2">
+                        <label class="label">Đơn vị:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="branch_name" />
+                    </div>
+
+                    <div class="w-100 me-2">
+                        <label class="label">Thời gian nhập:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="created_date" />
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="w-100 me-2">
+                        <label class="label">Số REF được tạo ra sau khi Hạch toán vào CORE:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="ref" />
+                    </div>
+                    <div class="w-100 me-2">
+                        <label class="label">Lệnh đặt Chuyển nhượng được xác nhận bởi GDV:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="confirm_dgv" />
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3" *ngIf="f['approved_user_full_name'].value">
+                    <div class="w-100 me-2">
+                        <label class="fst-italic">Lệnh đặt Chuyển nhượng TKTK/CCTG <label
+                                class="font-weight-bold fst-italic text-danger">{{f["stk"].value}}</label>
+                            . Được duyệt và cập nhật QSH thành công vào CORE lúc <label
+                                class="font-weight-bold fst-italic text-danger">{{f["approved_date"].value}}</label>
+                            . Bởi tài khoản KSV <label class="font-weight-bold fst-italic text-danger">{{f["approved_user_full_name"].value}}</label>
+                        </label>
+                    </div>
+                </div>
+                <!-- <h5>ĐƠN VỊ NHẬN CHUYỂN NHƯỢNG</h5>
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="w-100 me-2">
+                        <label class="label">Đơn vị:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="tranfer_branch" />
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="w-100 me-2">
+                        <label class="label">NVTV:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="tranfer_nvtv" />
+                    </div>
+                    <div class="w-100 me-2">
+                        <label class="label">GDV:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="tranfer_gdv" />
+                    </div>
+                    <div class="w-100 me-2">
+                        <label class="label">KSV:</label>
+                        <input class="form-control form-control-sm" type="text" formControlName="tranfer_ksv" />
+                    </div>
+                </div> -->
+
+            </div>
+        </div>
+    </div>
+
+    <div mat-dialog-actions class="pull-right">
+        <button *ngIf="permit.is_print_contract" (click)="onPrintContract()" type="button" class="btn btn-success" [disabled]="isLoadingPrintContract">
+            <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoadingPrintContract, '': !isLoadingPrintContract}"></i>
+            In hợp đồng
+        </button>
+
+        <button *ngIf="permit.is_send_approve && userIsGDV" (click)="onUpdate()" type="button" class="btn btn-info ms-2" [disabled]="isLoading">
+            <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i>
+            {{ this.data.status == TRANSFER_SELL_STATUS_CODE.CHO_GHI_NHAN_BAN ? 'Gửi duyệt' : 'Gửi duyệt chi tiền' }}
+        </button>
+
+        <button *ngIf="permit.is_delete && userIsGDVDelete" (click)="onDelete()" type="button" class="btn btn-danger ms-2" [disabled]="isLoadingDelete">
+            <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoadingDelete, '': !isLoadingDelete}"></i>
+            Xóa lệnh
+        </button>
+
+        <button *ngIf="permit.is_approve && userIsKSV" (click)="onApproved()" type="button" class="btn btn-info ms-2" [disabled]="isLoadingApproved">
+            <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoadingApproved, '': !isLoadingApproved}"></i>
+            Duyệt
+        </button>
+
+        <button *ngIf="permit.is_reject && userIsKSVReject" (click)="onReject()" type="button" class="btn btn-danger ms-2" [disabled]="isLoadingReject">
+            <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoadingReject, '': !isLoadingReject}"></i>
+            Từ chối
+        </button>
+
+        <button type="button" class="btn btn-secondary ms-2" (click)="closeFormDialog('close')"
+            data-dismiss="modal">Đóng</button>
+    </div>
+
+</form>

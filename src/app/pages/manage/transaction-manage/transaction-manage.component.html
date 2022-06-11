@@ -1,0 +1,50 @@
+<div class="row">
+   <div *ngIf="permit.is_query" class="col-12 grid-margin stretch-card">
+      <div class="card">
+         <div class="card-body">
+            <h4 class="card-title text-uppercase">Thông tin tìm kiếm</h4>
+
+            <form class="" [formGroup]="form" (ngSubmit)="onSearch()">
+               <div class="form-group row g-3">
+                  <div class="col-4">
+                     <label>Kỳ hạn còn lại</label>
+                     <input formControlName="amount_from" type="text" class="form-control form-control-sm" />
+                  </div>
+
+                  <div class="col-4">
+                     <label>Số dư</label>
+                     <input formControlName="amount_from" type="text" class="form-control form-control-sm" />
+                  </div>
+                  
+                  <div class="col-4">
+                     <label>Tình trạng</label>
+                     <input formControlName="amount_to" type="text" class="form-control form-control-sm" />
+                  </div>
+               </div>
+
+               <div class="form-group row g-3">
+                  <div class="col-4">
+                     <label>Đơn vị chuyển nhượng</label>
+                     <input formControlName="amount_to" type="text" class="form-control form-control-sm" />
+                  </div>
+
+                  <div class="col-4">
+                     <label>Đơn vị chuyển nhượng</label>
+                     <input formControlName="amount_to" type="text" class="form-control form-control-sm" />
+                  </div>
+               </div>
+
+               <button type="submit" class="btn btn-primary float-end ms-2" [disabled]="isLoading">
+                  <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i>
+                  Tìm kiếm
+               </button>
+
+               <button type="button" class="btn btn-secondary float-end">
+                  Reset
+               </button>
+            </form>
+         </div>
+      </div>
+   </div>
+
+</div>

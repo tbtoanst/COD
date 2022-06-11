@@ -1,0 +1,107 @@
+<div class="row">
+    <div *ngIf="permit.is_query" class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title text-uppercase">Thông tin tìm kiếm</h4>
+
+                <form class="" [formGroup]="form" (ngSubmit)="onSearch()">
+                    <div class="form-group row g-3">
+                        <div class="col-3">
+                            <label>Số tài khoản</label>
+                            <input formControlName="amount_from" type="text" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary float-end ms-2" [disabled]="isLoading">
+                        <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i>
+                        Tìm kiếm
+                    </button>
+
+                    <button type="button" class="btn btn-secondary float-end">
+                        Reset
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body min-height-500">
+                <div class="d-flex pb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="wrapper">
+                            <h4 class="card-title mb-0 text-uppercase">Danh sách TKTK/CCTG</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <ngx-spinner bdOpacity=0.5 bdColor="#fff" color="#1825aa" size="medium" [fullScreen]="false">
+                    <p>Đang tải dữ liệu</p>
+                </ngx-spinner>
+
+                <div class="table-responsive" style="position: relative;">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th> Số TKTK/CCTG </th>
+                                <th> Chỉ định ưu tiên </th>
+                                <th> Ngày giao dịch </th>
+                                <th> Ngày đến hạn </th>
+                                <th> Trạng thái giao dịch </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr *ngFor="let item of dataList, index as i">
+                                <td class="text-center"> {{item.so}} </td>
+                                <td class="text-center"> {{item.ntbccqt | date: 'dd/MM/yyyy'}} </td>
+                                <td class="text-center"> {{item.ntbccqt | date: 'dd/MM/yyyy'}} </td>
+                                <td class="text-center"> {{i + 1}} </td>
+                                <td class="text-center"> {{item.so}} </td>
+                            </tr>                           
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card-footer bg-white p-0">
+                <div class="footable-paging">
+                    <mat-paginator [length]="pageEvent.length" [pageIndex]="pageEvent.pageIndex" [pageSize]="pageEvent.pageSize" [pageSizeOptions]="[5, 10, 25, 100]" (page)="setPaginatorData($event)"></mat-paginator>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title text-uppercase">Xử lý điều chỉnh giao dịch</h4>
+
+                <form class="" [formGroup]="form" (ngSubmit)="onSubmit()">
+                    <div class="form-group row g-3">
+                        <div class="col-3">
+                            <label>Số tiền phí (VND)</label>
+                            <input formControlName="amount_from" type="text" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="col-3">
+                            <label>Số tiền KH nhận (VND)</label>
+                            <input formControlName="amount_from" type="text" class="form-control form-control-sm" />
+                        </div>
+
+                        <div class="col-6">
+                            <label>Giá trị giao dịch sau khi cập nhật (VND)</label>
+                            <input formControlName="amount_from" type="text" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary float-end ms-2" [disabled]="isLoading">
+                        <i class="fs-12-px fa" [ngClass]="{'fa-spin fa-spinner me-1': isLoading, '': !isLoading}"></i>
+                        Cập nhật
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
